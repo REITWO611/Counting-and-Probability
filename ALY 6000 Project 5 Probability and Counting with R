@@ -1,0 +1,397 @@
+## Rachel Li (SHU-YING, LI) 2023.10.25 ALY6000 Introduction of Analytics Project 5
+
+#1. Download the data set ball-dataset.csv and read it into your script. Each ball in the dataset is represented by a color (red, blue, green, or yellow) and a label (A, B, C, D, or E).
+setwd("/Users/rachel/Desktop/ALY 6000 Project 5 Probability and Counting with R")
+ball_dataset <- read.csv("ball-dataset.csv")
+
+#2. Create a frequency table as a data.frame or tibble that contains counts for each color of ball (freq_color).
+# Load the necessary library
+library(dplyr)
+
+# 使用 dplyr 中的 count 函數來計算每種顏色的計數
+freq_color <- ball_dataset %>%
+  count(color)
+
+# 查看頻率表
+print(freq_color)
+
+#3. Create a frequency table as a data.frame or tibble that contains counts for each label of ball (freq_label).
+# 使用 dplyr 中的 count 函數計算每個標籤的計數
+freq_label <- ball_dataset %>%
+  count(label)
+
+# 查看頻率表
+print(freq_label)
+
+#4. Create a bar chart of the ball data set representing the counts of the different colors.
+# 使用 ggplot2 创建颜色计数的条形图
+library(ggplot2)
+
+# 创建条形图
+color_bar_chart <- ggplot(freq_color, aes(x = color, y = n)) +
+  geom_bar(stat = "identity", fill = freq_color$color) +
+  labs(
+    title = "Color Counts of Balls",
+    x = "Color",
+    y = "Count"
+  ) +
+  theme_minimal()
+
+# 显示条形图
+print(color_bar_chart)
+
+#5. Create a bar chart of the ball data set representing the counts of the different labels.
+
+# 创建条形图
+label_bar_chart <- ggplot(freq_label, aes(x = label, y = n, fill = label)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = c("A" = "red", "B" = "blue", "C" = "green", "D" = "yellow", "E" = "purple")) +
+  labs(
+    title = "Label Counts of Balls",
+    x = "Label",
+    y = "Count"
+  ) +
+  theme_minimal()
+
+# 显示条形图
+print(label_bar_chart)
+
+#6. What is the probability of drawing a green ball (prob6_result)?
+# 计算绿色球的数量
+green_balls <- freq_color %>% filter(color == "green") %>% pull(n)
+
+# 计算总球的数量
+total_balls <- sum(freq_color$n)
+
+# 计算概率
+prob6_result <- green_balls / total_balls
+
+print(prob6_result) #0.192
+
+#7. What is the probability of drawing a blue or a red ball (prob7_result)?
+  
+# 计算蓝色球的数量
+blue_balls <- freq_color %>% filter(color == "blue") %>% pull(n)
+
+# 计算红色球的数量
+red_balls <- freq_color %>% filter(color == "red") %>% pull(n)
+
+# 计算总球的数量
+total_balls <- sum(freq_color$n)
+total_balls
+
+# 计算概率
+prob7_result <- (blue_balls + red_balls) / total_balls
+prob7_result #0.715
+
+#8. What is the probability of drawing a ball with a label of A or C (prob8_result)?
+
+# 计算标签为A的球的数量
+label_A_balls <- freq_label %>% filter(label == "A") %>% pull(n)
+
+# 计算标签为C的球的数量
+label_C_balls <- freq_label %>% filter(label == "C") %>% pull(n)
+
+# 计算总球的数量
+total_balls <- sum(freq_label$n)
+
+# 计算概率
+prob8_result <- (label_A_balls + label_C_balls) / total_balls
+prob8_result #0.189
+
+#9. What is the probability of drawing a yellow ball with a D (prob9_result)?
+
+# 找到抽到黃色球且標籤為D的球的數量
+yellow_D_balls <- ball_dataset %>% filter(color == "yellow" & label == "D") %>% nrow()
+
+# 計算總球的數量
+total_balls <- nrow(ball_dataset)
+
+# 計算概率
+prob9_result <- yellow_D_balls / total_balls
+prob9_result #0.036
+
+#10. What is the probability of drawing a yellow ball or a ball with a D (prob10_result)?
+# 找到抽到黄色球的数量
+yellow_balls <- ball_dataset %>% filter(color == "yellow") %>% nrow()
+
+# 找到抽到标签为D的球的数量
+D_balls <- ball_dataset %>% filter(label == "D") %>% nrow()
+
+# 找到既是黄色又是标签为D的球的数量
+yellow_D_balls <- ball_dataset %>% filter(color == "yellow" & label == "D") %>% nrow()
+
+# 计算总球的数量
+total_balls <- nrow(ball_dataset)
+
+# 计算概率
+prob10_result <- (yellow_balls / total_balls) + (D_balls / total_balls) - (yellow_D_balls / total_balls)
+prob10_result #0.382
+
+#11. What is the probability of drawing a blue ball followed by a red ball without replacement (prob11_result)?
+
+# 找到蓝球的数量
+blue_balls <- ball_dataset %>% filter(color == "blue") %>% nrow()
+
+# 找到红球的数量
+red_balls <- ball_dataset %>% filter(color == "red") %>% nrow()
+
+# 计算总球的数量
+total_balls <- nrow(ball_dataset)
+
+# 计算不替换的情况下抽到蓝球后抽到红球的概率
+prob11_result <- (blue_balls / total_balls) * (red_balls / (total_balls - 1))
+prob11_result #0.1253814
+
+#12. What is the probability of drawing four green balls in a row without replacement (prob12_result)?
+# 計算概率
+prob12_result <- (green_balls/total_balls) * ((green_balls - 1)/(total_balls - 1)) * ((green_balls - 2)/(total_balls - 2)) * ((green_balls - 3)/(total_balls - 3))
+
+# 顯示結果
+prob12_result #0.001324826 
+
+192 / 1000
+191 / 999
+190 / 998
+189 / 997
+
+0.192 * 0.1911912 * 0.1903808 * 0.1895687
+
+
+#13. What is the probability of drawing a red ball followed by a ball with a B without replacement (prob13_result)?
+# 計算紅色球的概率
+red_balls <- freq_color %>% filter(color == "red") %>% pull(n)
+
+# 計算B球的概率
+label_B_balls <- freq_label %>% filter(label == "B") %>% pull(n)
+
+# 計算概率
+prob13_result <- (red_balls/total_balls) * (label_B_balls/(total_balls - 1))
+
+# 顯示結果
+prob13_result #0.1245646
+
+408 / 1000
+305 / 999
+
+0.408 * 0.3053053
+
+
+#14. [Challenge] When making three draws without replacement, how many ways could you result in the letters “A”, “C”, “E”, in that order (prob14_result)?
+# 計算標籤A的數量
+label_A_balls <- freq_label %>% filter(label == "A") %>% pull(n)
+
+# 計算標籤C的數量
+label_C_balls <- freq_label %>% filter(label == "C") %>% pull(n)
+
+# 計算標籤E的數量
+label_E_balls <- freq_label %>% filter(label == "E") %>% pull(n)
+
+# 計算方式數
+prob14_result <- label_A_balls * label_C_balls * label_E_balls
+prob14_result  #1388270
+
+130 * 59 * 181
+
+#15. [Challenge] If the order drawn does not matter, in how many ways could you draw three balls that spell “ACE” (prob15_result)?
+# 計算A、C、E標籤的球的數量
+label_A_balls <- freq_label %>% filter(label == "A") %>% pull(n)
+label_C_balls <- freq_label %>% filter(label == "C") %>% pull(n)
+label_E_balls <- freq_label %>% filter(label == "E") %>% pull(n)
+
+# 计算方式数
+prob15_result <- choose(label_A_balls, 1) * choose(label_C_balls, 1) * choose(label_E_balls, 1)
+
+# 显示结果
+prob15_result 
+
+130 * 59 * 181
+
+#16. [Challenge] Consider your result for Problem 14. What is the probability that the three balls that spell “ACE” are all green (prob16_result)?
+
+# 计算三次抽出都是绿色的概率
+prob16_result <- (green_balls / total_balls) * ((green_balls - 1) / (total_balls - 1)) * ((green_balls - 2) / (total_balls - 2))
+
+# 打印结果
+print(prob16_result) #0.006988632
+
+192 / 1000
+191 / 999
+190 / 998
+
+0.192 * 0.1911912 * 0.1903808 
+
+
+
+# 17. Write the factorial function that computes the factorial of a given number.
+
+factorial <- function(n) {
+  if (n < 0) {
+    return(-1)
+  } else if (n == 0) {
+    return(1)
+  } else {
+    result <- 1
+    for (i in 1:n) {
+      result <- result * i
+    }
+    return(result)
+  }
+}
+
+# 测试函数
+print(factorial(0))    # 输出: 1
+print(factorial(3))    # 输出: 6
+print(factorial(6))    # 输出: 720
+print(factorial(-7))  # 输出: -1
+
+
+#Creating a coin flipping data frame
+#For the following problems, consider an unfair coin that has a probability .6 of landing on heads.
+#18. Manually create a data.frame or tibble that contains all possible outcomes of flipping the coin four times (coin_outcomes).
+
+# 创建一个包含硬币抛掷结果的数据框
+coin_outcomes <- expand.grid(Flip1 = c("H", "T"),
+                             Flip2 = c("H", "T"),
+                             Flip3 = c("H", "T"),
+                             Flip4 = c("H", "T"))
+
+# 显示数据框的前几行
+head(coin_outcomes)
+
+#19. Compute the probability of each row outcome and store it as a column in the data.frame or tibble (coin_outcomes).
+
+# 计算每一行的概率
+coin_outcomes$Probability <- (0.6)^(coin_outcomes$Flip1 == "H") * 
+  (0.6)^(coin_outcomes$Flip2 == "H") * 
+  (0.6)^(coin_outcomes$Flip3 == "H") * 
+  (0.6)^(coin_outcomes$Flip4 == "H")
+
+# 显示更新后的数据框
+head(coin_outcomes)
+
+#20. There are 5 possible outcomes in our coin dataset if we count the number of heads in each row. For example, the row “H H H H” has 4 heads and the row “H T H T” has 2 heads. Compute the probability of each of the 5 possible outcomes (num_heads_prob).
+# 创建一个数据框包含所有可能的硬币投掷结果
+coin_outcomes <- expand.grid(
+  Flip1 = c("H", "T"),
+  Flip2 = c("H", "T"),
+  Flip3 = c("H", "T"),
+  Flip4 = c("H", "T")
+)
+
+# 计算每种可能的正面的概率，考虑硬币的不公平性
+num_heads_prob <- coin_outcomes %>%
+  mutate(Probability = (ifelse(Flip1 == "H", 0.6, 0.4) * 
+                          ifelse(Flip2 == "H", 0.6, 0.4) * 
+                          ifelse(Flip3 == "H", 0.6, 0.4) * 
+                          ifelse(Flip4 == "H", 0.6, 0.4))) %>%
+  group_by(NumHeads = rowSums(. == "H")) %>%
+  summarize(TotalProbability = sum(Probability))
+
+# 查看结果
+print(num_heads_prob)
+
+0.0256 + 0.1536 + 0.3456 + 0.3456 + 0.1296
+
+#21. What is the probability of an outcome of three heads (prob21_result)?
+
+# 创建一个数据框包含每一行的正面数
+coin_outcomes <- data.frame(
+  Row = 1:16,
+  Flip1 = rep(c("H", "T"), each = 8),
+  Flip2 = rep(c("H", "T"), times = 8),
+  Flip3 = rep(c("H", "T"), times = 4),
+  Flip4 = rep(c("H", "T"), times = 2)
+)
+
+# 计算每种可能的正面数的概率，考虑硬币的不公平性
+num_heads_prob <- coin_outcomes %>%
+  mutate(Probability = (ifelse(Flip1 == "H", 0.6, 0.4) * 
+                          ifelse(Flip2 == "H", 0.6, 0.4) * 
+                          ifelse(Flip3 == "H", 0.6, 0.4) * 
+                          ifelse(Flip4 == "H", 0.6, 0.4))) %>%
+  group_by(NumHeads = rowSums(. == "H")) %>%
+  summarize(TotalProbability = sum(Probability))
+
+# 提取三个正面的概率
+prob21_result <- num_heads_prob %>% filter(NumHeads == 3) %>% pull(TotalProbability)
+
+# 输出结果
+print(prob21_result) #0.3456
+
+(0.6 * 0.6 * 0.6 * 0.4)*4 
+
+#22. What is the probability of an outcome of two heads or four heads (prob22_result)?
+
+# 计算出现两次正面或四次正面的概率
+prob22_result <- (0.6 * 0.6 * 0.4 * 0.4) * 6 + 0.1296
+
+# 显示结果
+print(prob22_result) #0.4752
+
+
+(0.6 * 0.6 * 0.4 * 0.4 ) * 6 + 0.1296
+
+
+#23. What is the probability of an outcome of less than or equal to three heads (prob23_result)?
+
+# 计算出现三个头或更少的概率
+prob23_result <- sum(dbinom(0:3, size = 4, prob = 0.6))
+
+# 显示结果
+print(prob23_result) #0.8704
+
+
+
+#24. Create a bar chart where the x-axis is the outcome and the y-axis is the probability.
+
+library(ggplot2)
+
+# 创建一个数据框，包含正面的数量和对应的概率
+head_probabilities <- data.frame(
+  NumHeads = 0:4,
+  Probability = c(0.4^4, 4 * (0.6 * 0.4^3), 6 * (0.6^2 * 0.4^2), 4 * (0.6^3 * 0.4), 0.6^4)
+)
+
+# 创建柱状图
+head_prob_chart <- ggplot(head_probabilities, aes(x = as.factor(NumHeads), y = Probability)) +
+  geom_bar(stat = "identity", fill = "blue") +
+  labs(
+    title = "probability distibution of heads for 4 flips",
+    x = "numbers of heads ",
+    y = "probability"
+  ) +
+  theme_minimal()
+
+# 显示柱状图
+print(head_prob_chart)
+
+
+#Soccer Games
+#The following problems consider a soccer team with a 75% chance of winning a game at home and a 50% chance of winning away games. Consider that the team is about to play 10 games: five at home and five away.
+# 定义参数
+p_home <- 0.75
+p_away <- 0.50
+total_games <- 10
+home_games <- 5
+away_games <- 5
+
+#25. What is the probability that they will win exactly 10 games (prob25_result)?
+#正好赢得10场比赛的概率
+prob25_result <- (p_home^home_games) * (p_away^away_games)
+prob25_result #0.007415771
+
+#26. What is the probability that they will win more than one game (prob26_result)?
+#赢得多于一场比赛的概率
+prob26_result <- 1 - sum(dbinom(0:1, size = total_games, prob = p_home)) * sum(dbinom(total_games:0, size = total_games, prob = p_away))
+prob26_result #0.9999704
+ 
+ 
+#27. How many different ways could you pick five games at random and have three home games and two away games (prob27_result)?
+# 使用组合函数计算 prob27_result
+# 計算不同方式數
+prob27_result <- choose(5, 3) * choose(5, 2)
+
+# 顯示結果
+print(prob27_result)
+
