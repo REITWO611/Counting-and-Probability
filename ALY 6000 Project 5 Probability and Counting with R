@@ -222,6 +222,13 @@ print(prob16_result) #0.006988632
 0.192 * 0.1911912 * 0.1903808 
 
 
+green_a<-ball|>filter(color=="green",label=="A")|>count()|>pull()
+green_c<-ball|>filter(color=="green",label=="C")|>count()|>pull()
+green_e<-ball|>filter(color=="green",label=="E")|>count()|>pull()
+prob16_result<-(green_a*green_c*green_e)/prob14_result
+prob16_result
+
+
 
 # 17. Write the factorial function that computes the factorial of a given number.
 
